@@ -10,6 +10,11 @@
       "url": "http://localhost:3000",
       "description": "Local Development Server"
     }
+    ,
+    {
+      "url": "https://goa-properties.netlify.app",
+      "description": "Production Server"
+    }
   ],
   "paths": {
     "/api/properties": {
