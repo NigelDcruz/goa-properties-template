@@ -91,3 +91,32 @@ Ensure your development server is active, then execute:
 ```bash
 node scripts/test-api.js
 ```
+
+---
+
+## 🌐 Production Deployment
+
+This project is configured to run flawlessly on platforms like **Netlify** or **Vercel** with full Prisma database integration.
+
+### 1. Database Provisioning (Supabase / Neon / PostgreSQL)
+1. Provision a free-tier PostgreSQL instance on **Supabase** or **Neon**.
+2. Copy the connection string.
+
+### 2. Push Database Schema to Production
+To set up all the required tables and indexes on your live database, run:
+```bash
+# In your local terminal, make sure DATABASE_URL is set, then run:
+npx prisma db push
+```
+
+### 3. Deploying to Netlify
+We have provided a fully configured [netlify.toml](file:///c:/Users/rogth/source/repos/rogthat7/Nigga/goa-properties-template/netlify.toml) file in the root directory.
+
+1. Connect your repository to **Netlify**.
+2. Under **Site Configuration** > **Environment variables**, define your production secret:
+   - **Key**: `DATABASE_URL`
+   - **Value**: `[Your PostgreSQL connection string]`
+3. Trigger a build. Netlify will automatically compile, generate the Prisma client during the build hook, and host your serverless API routes on their CDN!
+
+*Note: If no `DATABASE_URL` is configured on Netlify, the production app will automatically start up using our **in-memory database fallback**, serving and caching mock properties gracefully.*
+
