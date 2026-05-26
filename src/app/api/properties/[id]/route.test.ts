@@ -3,8 +3,8 @@ import { GET, PUT, DELETE } from "./route";
 import { describe, it, expect } from "vitest";
 
 describe("Individual Property Item Endpoints", () => {
-  const existingId = "1"; // Mock property ID 1 from seed data
-  const existingSlug = "luxury-villa-assagao";
+  const existingId = "e51241df-a567-488f-9e6e-214152db4901"; // Mock property ID from seed data
+  const existingSlug = "luxury-portuguese-villa-assagao";
 
   it("should successfully retrieve property details by UUID ID", async () => {
     const req = new NextRequest(`http://localhost:3000/api/properties/${existingId}`);
@@ -66,7 +66,7 @@ describe("Individual Property Item Endpoints", () => {
 
   it("should delete an existing property listing successfully", async () => {
     // Delete the property we created in the collection test or another mock one
-    const deleteId = "2"; // Seed item 2
+    const deleteId = "f42352ef-b678-499f-af7f-325263ec5012"; // Seed item 2
     const req = new NextRequest(`http://localhost:3000/api/properties/${deleteId}`, {
       method: "DELETE",
     });

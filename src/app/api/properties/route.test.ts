@@ -101,7 +101,7 @@ describe("POST /api/properties", () => {
       area: "4000 sq.ft.",
       listingType: "sale",
       verified: true,
-      slug: "luxury-villa-assagao", // Duplicate of seeded mock ID 1
+      slug: "luxury-portuguese-villa-assagao", // Duplicate of seeded mock ID 1
     };
 
     const req = new NextRequest("http://localhost:3000/api/properties", {

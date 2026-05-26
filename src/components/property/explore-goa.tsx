@@ -32,7 +32,11 @@ const locations = [
   },
 ];
 
-export default function ExploreGoa() {
+type ExploreGoaProps = {
+  onLocationSelect?: (location: string) => void;
+};
+
+export default function ExploreGoa({ onLocationSelect }: ExploreGoaProps) {
   return (
     <section className="px-4 py-8">
       <div
@@ -63,6 +67,7 @@ export default function ExploreGoa() {
         {locations.map((location) => (
           <button
             key={location.name}
+            onClick={() => onLocationSelect?.(location.name)}
             aria-label={`Explore properties in ${location.name}`}
             className="
               flex

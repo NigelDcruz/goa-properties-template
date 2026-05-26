@@ -1,7 +1,11 @@
 import Button from "@/components/shared/button";
 import Card from "../shared/card";
 
-export default function HeroSection() {
+type HeroSectionProps = {
+  onSearchClick?: () => void;
+};
+
+export default function HeroSection({ onSearchClick }: HeroSectionProps) {
   return (
     <section className="px-4 py-6">
       <Card className="p-6">
@@ -50,7 +54,7 @@ export default function HeroSection() {
         </p>
 
         <div className="mt-6">
-          <Button>Search Properties</Button>
+          <Button onClick={onSearchClick}>Search Properties</Button>
         </div>
       </Card>
     </section>
