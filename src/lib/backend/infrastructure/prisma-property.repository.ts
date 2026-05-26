@@ -14,10 +14,15 @@ function getPrismaClient(): PrismaClient | null {
   if (typeof window !== "undefined") return null; // Avoid client-side execution issues
   if (!process.env.DATABASE_URL) return null; // Only instantiate if DB environment is loaded
 
-  if (!prismaInstance) {
-    prismaInstance = new PrismaClient();
+  try {
+    if (!prismaInstance) {
+      prismaInstance = new PrismaClient();
+    }
+    return prismaInstance;
+  } catch (error) {
+    console.error("PrismaClient constructor error, falling back to null:", error);
+    return null;
   }
-  return prismaInstance;
 }
 
 export class PrismaPropertyRepository implements IPropertyRepository {
@@ -26,11 +31,11 @@ export class PrismaPropertyRepository implements IPropertyRepository {
   }
 
   async findById(id: string): Promise<Property | null> {
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      return inMemoryProperties.find((p) => p.id === id) || null;
-    }
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        return inMemoryProperties.find((p) => p.id === id) || null;
+      }
       const dbProp = await prisma.property.findUnique({ where: { id } });
       if (!dbProp) return null;
       return this.mapToDomain(dbProp);
@@ -41,11 +46,11 @@ export class PrismaPropertyRepository implements IPropertyRepository {
   }
 
   async findBySlug(slug: string): Promise<Property | null> {
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      return inMemoryProperties.find((p) => p.slug === slug) || null;
-    }
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        return inMemoryProperties.find((p) => p.slug === slug) || null;
+      }
       const dbProp = await prisma.property.findUnique({ where: { slug } });
       if (!dbProp) return null;
       return this.mapToDomain(dbProp);
@@ -60,11 +65,11 @@ export class PrismaPropertyRepository implements IPropertyRepository {
     listingType?: "sale" | "rent";
     search?: string;
   }): Promise<Property[]> {
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      return this.filterInMemory(filters);
-    }
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        return this.filterInMemory(filters);
+      }
       const where: any = {};
       
       if (filters?.location) {
@@ -103,13 +108,12 @@ export class PrismaPropertyRepository implements IPropertyRepository {
       slug: data.slug,
     };
 
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      inMemoryProperties.push(newProperty);
-      return newProperty;
-    }
-
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        inMemoryProperties.push(newProperty);
+        return newProperty;
+      }
       const dbProp = await prisma.property.create({
         data: {
           id: newProperty.id,
@@ -134,16 +138,15 @@ export class PrismaPropertyRepository implements IPropertyRepository {
   }
 
   async update(id: string, data: UpdatePropertyInput): Promise<Property> {
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      const index = inMemoryProperties.findIndex((p) => p.id === id);
-      if (index === -1) throw new Error("Property not found");
-      const updated = { ...inMemoryProperties[index], ...data } as Property;
-      inMemoryProperties[index] = updated;
-      return updated;
-    }
-
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        const index = inMemoryProperties.findIndex((p) => p.id === id);
+        if (index === -1) throw new Error("Property not found");
+        const updated = { ...inMemoryProperties[index], ...data } as Property;
+        inMemoryProperties[index] = updated;
+        return updated;
+      }
       const dbProp = await prisma.property.update({
         where: { id },
         data: {
@@ -171,16 +174,15 @@ export class PrismaPropertyRepository implements IPropertyRepository {
   }
 
   async delete(id: string): Promise<Property> {
-    const prisma = getPrismaClient();
-    if (!prisma) {
-      const index = inMemoryProperties.findIndex((p) => p.id === id);
-      if (index === -1) throw new Error("Property not found");
-      const deleted = inMemoryProperties[index];
-      inMemoryProperties.splice(index, 1);
-      return deleted;
-    }
-
     try {
+      const prisma = getPrismaClient();
+      if (!prisma) {
+        const index = inMemoryProperties.findIndex((p) => p.id === id);
+        if (index === -1) throw new Error("Property not found");
+        const deleted = inMemoryProperties[index];
+        inMemoryProperties.splice(index, 1);
+        return deleted;
+      }
       const dbProp = await prisma.property.delete({ where: { id } });
       return this.mapToDomain(dbProp);
     } catch (error) {
