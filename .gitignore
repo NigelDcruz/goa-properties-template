@@ -51,3 +51,5 @@ CLAUDE.md
 claude-flow.config.json
 .swarm/
 .gemini/
+.agents/
+skills-lock.json
