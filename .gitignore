@@ -41,3 +41,15 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Claude, Claude Flow & Swarm agents, skills, and configurations
+.claude/
+.claude*
+.claude-flow/
+.claude-flow*
+CLAUDE.md
+claude-flow.config.json
+.swarm/
+.gemini/
+.agents/
+skills-lock.json

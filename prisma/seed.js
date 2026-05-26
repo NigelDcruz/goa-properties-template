@@ -1,6 +1,10 @@
-import { Property } from "@/types/property";
+const { Client } = require("pg");
 
-export const mockProperties: Property[] = [
+const client = new Client({
+  connectionString: "postgresql://postgres.zfytdnpgszqfasfenqtt:Regor%408806329362@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres",
+});
+
+const mockProperties = [
   {
     id: "e51241df-a567-488f-9e6e-214152db4901",
     title: "Luxury Portuguese Villa in Assagao",
@@ -262,3 +266,42 @@ export const mockProperties: Property[] = [
     slug: "boutique-garden-apartment-vagator",
   },
 ];
+
+async function main() {
+  console.log("🌱 Seeding database via pg (Sydney pooler)...");
+  await client.connect();
+
+  for (const p of mockProperties) {
+    const query = `
+      INSERT INTO "Property" ("id", "title", "location", "price", "image", "bedrooms", "bathrooms", "area", "listingType", "verified", "slug", "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW())
+      ON CONFLICT ("slug") DO UPDATE
+      SET "title" = $2, "location" = $3, "price" = $4, "image" = $5, "bedrooms" = $6, "bathrooms" = $7, "area" = $8, "listingType" = $9, "verified" = $10, "updatedAt" = NOW()
+    `;
+
+    await client.query(query, [
+      p.id,
+      p.title,
+      p.location,
+      p.price,
+      p.image,
+      p.bedrooms,
+      p.bathrooms,
+      p.area,
+      p.listingType,
+      p.verified,
+      p.slug
+    ]);
+  }
+
+  console.log(`✅ Seeding complete. Successfully seeded ${mockProperties.length} properties.`);
+}
+
+main()
+  .catch((e) => {
+    console.error("❌ Seeding failed:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await client.end();
+  });
